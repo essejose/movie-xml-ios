@@ -23,10 +23,26 @@ class TheatesViewController: UIViewController {
         super.viewDidLoad()
         
         loadXML();
+        //print(theaters.count)
         
+    }
+    
+    
+    func addTheaters(){
         
-
-        // Do any additional setup after loading the view.
+        for theater in theaters {
+            
+            let coordinate = CLLocationCoordinate2D(latitude: theater.latitude,longitude: theater.longitude)
+            let annotation  = TheaterAnotation(coordinate: coordinate)
+            
+            annotation.title = theater.name
+            annotation.subtitle = theater.address
+            mapview.addAnnotation(annotation)
+            
+        }
+        
+        mapview.showAnnotations(mapview.annotations, animated: true)
+        
     }
     
     
@@ -52,6 +68,8 @@ class TheatesViewController: UIViewController {
 }
 
 extension TheatesViewController: XMLParserDelegate{
+    
+    
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         print(elementName)
         
@@ -62,9 +80,16 @@ extension TheatesViewController: XMLParserDelegate{
             theater = Theater()
         
         }
-        
-        
-        func parser( _ parser: XMLParser, foundCharacters string : String){
+    }
+    
+
+    func parserDidEndDocument(_ parser: XMLParser) {
+        //theaters.append(theater)
+        addTheaters()
+    }
+    
+    
+    func parser( _ parser: XMLParser, foundCharacters string : String){
             print(string)
             
             let content = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -106,9 +131,7 @@ extension TheatesViewController: XMLParserDelegate{
             }
 
         }
-        
-        
-    }
+    
 }
 
 

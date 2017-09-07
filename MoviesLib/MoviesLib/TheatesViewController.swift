@@ -13,8 +13,12 @@ import MapKit
 class TheatesViewController: UIViewController {
     
     
+    @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var mapview: MKMapView!
+    
+    lazy var locationManage = CLLocationManager()
 
+    
     var currentElement : String!
     var theater: Theater!
     var theaters: [Theater] = []
@@ -23,14 +27,46 @@ class TheatesViewController: UIViewController {
         super.viewDidLoad()
         
         mapview.delegate = self
+        searchBar.delegate = self
+        
 
         loadXML();
         //print(theaters.count)
         
+        requestUserLocationAuthorization()
+        
     }
     
     
+    func requestUserLocationAuthorization(){
+        
+        if CLLocationManager.locationServicesEnabled(){
+        
+            locationManage.delegate = self
+            locationManage.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManage.allowsBackgroundLocationUpdates = true
+            locationManage.pausesLocationUpdatesAutomatically = true
+            
+            switch CLLocationManager.authorizationStatus(){
+                case .authorizedAlways, .authorizedWhenInUse:
+                    print("tudo liberado bro")
+            case .denied:
+                    print(" ele nao liberou a localizacacao >(")
+                
+            case .notDetermined:
+                    print("ainda nao pedi")
+                locationManage.requestWhenInUseAuthorization()
+            
+            case .restricted:
+                    print("nao tem acesso a localizacao")
+            
+            } 
+            
+            
+        }
+        
     
+    }
     
     func addTheaters(){
         
@@ -70,6 +106,42 @@ class TheatesViewController: UIViewController {
   
 
 }
+
+
+extension TheatesViewController: CLLocationManagerDelegate{
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        
+        switch status {
+        case .authorizedWhenInUse:
+                mapview.showsUserLocation = true
+        default:
+            break
+        }
+        
+    }
+    
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        print(userLocation.location?.speed)
+        
+        let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 500, 500)
+        
+        mapview.setRegion(region, animated: true)
+        
+        
+    }
+
+}
+
+
+extension TheatesViewController : UISearchBarDelegate{
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+    }
+    
+}
+
 
 extension TheatesViewController: MKMapViewDelegate{
     

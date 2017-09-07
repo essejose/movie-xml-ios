@@ -22,10 +22,14 @@ class TheatesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mapview.delegate = self
+
         loadXML();
         //print(theaters.count)
         
     }
+    
+    
     
     
     func addTheaters(){
@@ -65,6 +69,30 @@ class TheatesViewController: UIViewController {
     
   
 
+}
+
+extension TheatesViewController: MKMapViewDelegate{
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView: MKAnnotationView!
+        
+        if annotation is TheaterAnotation{
+            
+            annotationView  = mapview.dequeueReusableAnnotationView(withIdentifier: "Theater")
+            
+            if annotationView  == nil {
+                annotationView =  MKAnnotationView(annotation: annotation, reuseIdentifier: "Theater")
+                annotationView.image = UIImage(named: "theaterIcon")
+                annotationView.canShowCallout = true
+            } else{
+                
+                annotationView.annotation = annotation
+            
+            }
+        }
+        return annotationView
+    }
+    
 }
 
 extension TheatesViewController: XMLParserDelegate{

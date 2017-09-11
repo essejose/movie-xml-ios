@@ -38,6 +38,43 @@ class TheatesViewController: UIViewController {
     }
     
     
+    func getRoute (destination: CLLocationCoordinate2D){
+        let request = MKDirectionsRequest()
+        
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: locationManage.location!.coordinate))
+        
+        let directions = MKDirections(request: request)
+        
+        directions.calculate { ( response : MKDirectionsResponse?, error : Error?) in
+            
+            if error == nil{
+                
+                guard let response =  response else {return}
+            
+                let route = response.routes.first!
+                
+                print("Distancia", route.distance)
+                print("expectedTravelTime", route.expectedTravelTime)
+                print("name", route.name)
+                
+                
+                for step in route.steps{
+                    
+                    print("Em \(step.distance) metros, \(step.instructions)")
+                
+                }
+                
+            
+            }else{
+            
+                print(error!.localizedDescription)
+            }
+            
+        }
+    
+    }
+    
     func requestUserLocationAuthorization(){
         
         if CLLocationManager.locationServicesEnabled(){
@@ -126,7 +163,7 @@ extension TheatesViewController: CLLocationManagerDelegate{
         
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 500, 500)
         
-        mapview.setRegion(region, animated: true)
+        //mapview.setRegion(region, animated: true)
         
         
     }
@@ -138,6 +175,49 @@ extension TheatesViewController : UISearchBarDelegate{
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
+        
+        
+    }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        let resquest = MKLocalSearchRequest()
+
+        resquest.naturalLanguageQuery = searchBar.text
+        
+        resquest.region = mapview.region
+        let search = MKLocalSearch(request: resquest)
+        search.start { (response : MKLocalSearchResponse?, error: Error?) in
+            
+            if(error == nil){
+                
+                guard let response = response else {return}
+                
+                var placeMarks: [MKPointAnnotation] = []
+                
+                
+                for item in response.mapItems{
+                
+                    let annotation = MKPointAnnotation()
+                    
+                    annotation.coordinate = item.placemark.coordinate
+                    annotation.title = item.name
+                    annotation.subtitle = item.phoneNumber
+                    
+                    placeMarks.append(annotation)
+                }
+                
+                self.mapview.removeAnnotations(self.mapview.annotations)
+                self.mapview.addAnnotations(placeMarks)
+                
+                
+                
+            }else{
+                print("Deu erro", error!.localizedDescription)
+            }
+            
+        }
     }
     
 }
@@ -156,14 +236,65 @@ extension TheatesViewController: MKMapViewDelegate{
                 annotationView =  MKAnnotationView(annotation: annotation, reuseIdentifier: "Theater")
                 annotationView.image = UIImage(named: "theaterIcon")
                 annotationView.canShowCallout = true
+                
+                let btLeft = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30 ))
+                
+                    btLeft.setImage(UIImage(named:"car"),for: .normal)
+                    annotationView.leftCalloutAccessoryView = btLeft
+                
+                let btRight = UIButton(type: .infoLight)
+                annotationView.rightCalloutAccessoryView = btRight
+                
+                
+                
             } else{
                 
                 annotationView.annotation = annotation
             
             }
         }
+        else if annotation is MKPointAnnotation{
+                
+                annotationView  = mapview.dequeueReusableAnnotationView(withIdentifier: "POI")
+                
+                if annotationView  == nil {
+                    annotationView =  MKPinAnnotationView(annotation: annotation, reuseIdentifier: "POI")
+                    annotationView.image = UIImage(named: "theaterIcon")
+                    annotationView.canShowCallout = true
+                    (annotationView as! MKPinAnnotationView).pinTintColor = .blue
+                    (annotationView as! MKPinAnnotationView).animatesDrop = true
+                    annotationView.canShowCallout = true
+                    
+                    
+                    
+                    
+                    
+                } else{
+                    
+                    annotationView.annotation = annotation
+                    
+                }
+                
+            }
+        
         return annotationView
     }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if control == view.leftCalloutAccessoryView{
+            
+            print("Traca rota")
+            getRoute(destination: view.annotation!.coordinate)
+            
+            
+        } else{
+        
+            print("Mostra site")
+        }
+        
+    }
+    
     
 }
 

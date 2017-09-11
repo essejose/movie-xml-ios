@@ -98,6 +98,7 @@ class MoviesTableViewController: UITableViewController {
         cell.lbRating.text = "\(dataSource[indexPath.row].rating)"
         cell.lbSummary.text = dataSource[indexPath.row].summary
         
+        
         return cell
     }
 

@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -134,6 +135,76 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1TH-mc-tFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1500" y="641"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="zMX-AP-DQV">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Shb-lI-XI3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="WebViewController" id="m7B-4r-7X9" customClass="WebViewController" customModule="MoviesLib" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vRe-1K-dZV"/>
+                        <viewControllerLayoutGuide type="bottom" id="e27-wt-HeB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aEG-yh-SSy">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="soc-6X-2sv">
+                                <rect key="frame" x="0.0" y="63" width="320" height="433"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11U-kf-jXS">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="rewind" id="0OF-lB-SPj">
+                                        <connections>
+                                            <action selector="goBack" destination="soc-6X-2sv" id="SNN-uU-jQa"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Drt-07-kl1"/>
+                                    <barButtonItem title="JS" id="Evx-IM-JyA">
+                                        <connections>
+                                            <action selector="runJS:" destination="m7B-4r-7X9" id="vmN-Tw-upA"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="L5B-ox-Qn4"/>
+                                    <barButtonItem systemItem="fastForward" id="xCi-GX-s97"/>
+                                </items>
+                            </toolbar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CxO-S3-wgG">
+                                <rect key="frame" x="16" y="28" width="34" height="30"/>
+                                <state key="normal" title="Back"/>
+                                <connections>
+                                    <action selector="clouse:" destination="m7B-4r-7X9" eventType="touchUpInside" id="kVJ-S7-TjX"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="YoG-Qf-U1x">
+                                <rect key="frame" x="142" y="266" width="37" height="37"/>
+                                <color key="color" red="1" green="0.22624398940000001" blue="0.1172207114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="YoG-Qf-U1x" firstAttribute="centerY" secondItem="aEG-yh-SSy" secondAttribute="centerY" id="082-LZ-OTk"/>
+                            <constraint firstItem="soc-6X-2sv" firstAttribute="top" secondItem="CxO-S3-wgG" secondAttribute="bottom" constant="5" id="1az-Ru-UVg"/>
+                            <constraint firstItem="11U-kf-jXS" firstAttribute="leading" secondItem="aEG-yh-SSy" secondAttribute="leading" id="2bW-ny-0o1"/>
+                            <constraint firstItem="e27-wt-HeB" firstAttribute="top" secondItem="11U-kf-jXS" secondAttribute="bottom" id="4Ji-1a-MB6"/>
+                            <constraint firstItem="CxO-S3-wgG" firstAttribute="top" secondItem="vRe-1K-dZV" secondAttribute="bottom" constant="8" id="GCV-O6-Kuy"/>
+                            <constraint firstItem="CxO-S3-wgG" firstAttribute="leading" secondItem="aEG-yh-SSy" secondAttribute="leadingMargin" id="QXd-L5-iiA"/>
+                            <constraint firstItem="soc-6X-2sv" firstAttribute="leading" secondItem="aEG-yh-SSy" secondAttribute="leading" id="mMy-2I-FTS"/>
+                            <constraint firstAttribute="trailing" secondItem="soc-6X-2sv" secondAttribute="trailing" id="sjd-ic-oVB"/>
+                            <constraint firstAttribute="trailing" secondItem="11U-kf-jXS" secondAttribute="trailing" id="tA6-Gx-RKU"/>
+                            <constraint firstItem="YoG-Qf-U1x" firstAttribute="centerX" secondItem="aEG-yh-SSy" secondAttribute="centerX" id="u4H-vF-9Aw"/>
+                            <constraint firstItem="11U-kf-jXS" firstAttribute="top" secondItem="soc-6X-2sv" secondAttribute="bottom" constant="28" id="uOg-U5-A2u"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="loading" destination="YoG-Qf-U1x" id="DdA-yK-tF4"/>
+                        <outlet property="webView" destination="soc-6X-2sv" id="tjS-nf-AWQ"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="2238.75" y="640.14084507042253"/>
         </scene>
         <!--Movie View Controller-->
         <scene sceneID="tne-QT-ifu">

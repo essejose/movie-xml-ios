@@ -65,6 +65,10 @@ class TheatesViewController: UIViewController {
                 
                 }
                 
+                self.mapview.add(route.polyline, level: .aboveRoads)
+                self.mapview.showAnnotations(self.mapview.annotations, animated: true)
+                
+                
             
             }else{
             
@@ -113,7 +117,7 @@ class TheatesViewController: UIViewController {
             let annotation  = TheaterAnotation(coordinate: coordinate)
             
             annotation.title = theater.name
-            annotation.subtitle = theater.address
+            annotation.subtitle = theater.url
             mapview.addAnnotation(annotation)
             
         }
@@ -287,11 +291,43 @@ extension TheatesViewController: MKMapViewDelegate{
             print("Traca rota")
             getRoute(destination: view.annotation!.coordinate)
             
+            mapview.removeOverlays(mapview.overlays)
+            mapview.deselectAnnotation(view.annotation, animated: true)
+            
             
         } else{
         
             print("Mostra site")
+            
+            let vc = storyboard?.instantiateViewController(withIdentifier:
+                "WebViewController") as! WebViewController
+            
+            vc.url = view.annotation?.subtitle!
+            present(vc, animated: true, completion: nil)
+            
+
         }
+        
+    
+        
+    
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
+        if overlay is MKPolyline{
+            
+            let renderer = MKPolylineRenderer(overlay: overlay)
+            renderer.strokeColor = .blue
+            renderer.lineWidth = 6.0
+            
+            return renderer
+            
+        }else{
+            
+            return MKOverlayRenderer(overlay: overlay)
+        }
+        
         
     }
     
@@ -339,7 +375,7 @@ extension TheatesViewController: XMLParserDelegate{
                 case "longitude":
                     theater.longitude = Double(content)!
                 case "url":
-                    theater.address = content
+                    theater.url = content
                     
                 default:
                     break
